@@ -12,6 +12,8 @@ private let kLZBCollectionViewCellID = "kLZBCollectionViewCellID"
 
 class ViewController: UIViewController {
     
+    fileprivate var itemCount = 30
+    
     fileprivate lazy var collectionView : UICollectionView = {
         
          let  waterLayout = LZBWaterFlowLayout()
@@ -19,6 +21,7 @@ class ViewController: UIViewController {
          waterLayout.minimumInteritemSpacing = 10
          waterLayout.minimumLineSpacing = 10
          waterLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10)
+         waterLayout.dataSoure = self
         
          let collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: waterLayout)
          collectionView.dataSource = self
@@ -40,13 +43,35 @@ class ViewController: UIViewController {
 extension ViewController : UICollectionViewDataSource{
    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 30
+        return itemCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
          let cell = collectionView.dequeueReusableCell(withReuseIdentifier: kLZBCollectionViewCellID, for: indexPath)
         cell.backgroundColor = UIColor.getRandomColor()
+        
+        var contentLabel : UILabel? = cell.contentView.subviews.first as? UILabel
+        if contentLabel == nil{
+            contentLabel = UILabel(frame: cell.bounds)
+            contentLabel?.textAlignment = .center
+            cell.contentView.addSubview(contentLabel!)
+        }
+          contentLabel?.text = "\(indexPath.item)"
+
+        if indexPath.item == itemCount - 1{
+           itemCount += itemCount
+            collectionView.reloadData()
+        }
+        
         return cell
     }
     
+}
+
+//MARK:- LZBWaterFlowLayoutDataSource
+
+extension ViewController : LZBWaterFlowLayoutDataSource{
+    func waterFlowLayout(_ waterFlowLayout: LZBWaterFlowLayout, indexPath: IndexPath) -> CGFloat {
+        return   CGFloat(arc4random_uniform(100) + 100)
+    }
 }
