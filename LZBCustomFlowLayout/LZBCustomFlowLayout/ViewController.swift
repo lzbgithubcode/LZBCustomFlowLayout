@@ -72,6 +72,7 @@ extension ViewController : UICollectionViewDataSource{
 
 extension ViewController : LZBWaterFlowLayoutDataSource{
     func waterFlowLayout(_ waterFlowLayout: LZBWaterFlowLayout, indexPath: IndexPath) -> CGFloat {
-        return   CGFloat(arc4random_uniform(100) + 100)
+        let  width = view.bounds.width
+        return  indexPath.item%2==0 ? width * 2/3 : width * 0.5
     }
 }
