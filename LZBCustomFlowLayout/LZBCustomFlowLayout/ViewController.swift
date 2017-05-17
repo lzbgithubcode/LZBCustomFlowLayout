@@ -23,8 +23,10 @@ class ViewController: UIViewController {
          waterLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10)
          waterLayout.dataSoure = self
         
+        
          let collectionView = UICollectionView(frame: self.view.bounds, collectionViewLayout: waterLayout)
          collectionView.dataSource = self
+         collectionView.delegate = self
          collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: kLZBCollectionViewCellID)
         
          return collectionView
@@ -40,7 +42,7 @@ class ViewController: UIViewController {
 }
 
 //MARK:- collectionView协议方法
-extension ViewController : UICollectionViewDataSource{
+extension ViewController : UICollectionViewDataSource,UICollectionViewDelegate{
    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return itemCount
@@ -57,13 +59,16 @@ extension ViewController : UICollectionViewDataSource{
             cell.contentView.addSubview(contentLabel!)
         }
           contentLabel?.text = "\(indexPath.item)"
-
-        if indexPath.item == itemCount - 1{
-           itemCount += itemCount
-            collectionView.reloadData()
-        }
         
         return cell
+    }
+    
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if collectionView.contentOffset.y > collectionView.contentSize.height - collectionView.bounds.size.height{
+             itemCount += itemCount
+            collectionView.reloadData()
+        }
     }
     
 }
